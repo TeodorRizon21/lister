@@ -41,11 +41,29 @@ npm run db:push
 npm run dev
 ```
 
-## 5. Securitate
+## 5. Securitate (date personale)
 
-- Rutele sunt protejate în **middleware** (Clerk).
-- Rolurile **admin** / **staff** se verifică pe server (`requireAdmin`, `requireStaffOrAdmin`).
-- `DATABASE_URL` și `CLERK_SECRET_KEY` doar pe server / secret manager în producție.
+### Straturi de protecție
+
+1. **Middleware** (`src/middleware.ts`): sesiune Clerk obligatorie pe `/`, `/scanner`, `/admin`, API — exceptând `/sign-in`, `/sign-up`, `/login` și înscrierea publică `/e/*`.
+2. **Roluri în baza de date** (`User.role`):
+   - `admin` — panou, import, export QR, setări eveniment;
+   - `staff` — scanner check-in (nume participanți la scan);
+   - `pending` — cont autentificat **fără** acces la date participanți (implicit la primul login).
+3. **Verificări server**: `requireAdmin`, `requireStaffOrAdmin`, `authorizeAdminApi` pe layout-uri, server actions și rute API.
+
+### Configurare obligatorie în producție
+
+- **Clerk**: dezactivează sign-up public dacă nu inviți manual utilizatori (Dashboard → Restrictions).
+- **`DEFAULT_ADMIN_EMAIL`**: primul administrator.
+- **`STAFF_ALLOWED_EMAILS`** (opțional): listă de emailuri care primesc automat `staff` (voluntari scanner).
+- Alți utilizatori rămân `pending` până promovezi rolul în Prisma (`db:studio` sau script).
+- **`REGISTRATION_SESSION_SECRET`**: secret dedicat pentru cookie-ul de parolă la `/e/{slug}` (nu reutiliza doar cheia Clerk în producție).
+
+### Link public înscriere
+
+- Doar eveniment + parolă + cookie semnat; nu expune lista de participanți.
+- Server actions de înscriere nu necesită cont Clerk (by design).
 
 ## 6. Înscriere participanți (link public)
 

@@ -11,6 +11,8 @@ datasource db {
 enum Role {
   admin
   staff
+  /// Cont Clerk fără rol explicit — fără acces la date participanți.
+  pending
 }
 
 enum CheckInResult {
@@ -39,7 +41,7 @@ model User {
   id        String   @id @map("_id")
   email     String   @unique
   fullName  String
-  role      Role     @default(staff)
+  role      Role     @default(pending)
   createdAt DateTime @default(now())
 
   eventsCreated Event[]      @relation("EventCreator")

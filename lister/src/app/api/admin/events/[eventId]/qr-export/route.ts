@@ -1,6 +1,6 @@
-import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import JSZip from "jszip";
+import { authorizeAdminApi } from "@/lib/auth/guards";
 import { prisma } from "@/lib/prisma";
 import {
   qrExportFolder,
@@ -17,15 +17,8 @@ export async function GET(
   _request: Request,
   context: { params: Promise<{ eventId: string }> },
 ) {
-  const { userId } = await auth();
-  if (!userId) {
-    return NextResponse.json({ error: "Neautentificat." }, { status: 401 });
-  }
-
-  const dbUser = await prisma.user.findUnique({ where: { id: userId } });
-  if (!dbUser || dbUser.role !== "admin") {
-    return NextResponse.json({ error: "Acces interzis." }, { status: 403 });
-  }
+  const authResult = await authorizeAdminApi();
+  if (!authResult.ok) return authResult.response;
 
   const { eventId } = await context.params;
   const event = await prisma.event.findUnique({

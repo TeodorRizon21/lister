@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import type { Role, User } from "@prisma/client";
 import type { User as ClerkUser } from "@clerk/nextjs/server";
+import { isAdminRole, isStaffRole } from "@/lib/auth/roles";
 
 function adminFromMetadata(meta: unknown): boolean {
   if (!meta || typeof meta !== "object") return false;
@@ -30,13 +31,31 @@ export function isClerkAdminFromSessionClaims(
   return false;
 }
 
+function parseStaffAllowlist(): Set<string> {
+  const raw = process.env.STAFF_ALLOWED_EMAILS?.trim();
+  if (!raw) return new Set();
+  return new Set(
+    raw
+      .split(",")
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean),
+  );
+}
+
+function isEmailStaffAllowlisted(email: string): boolean {
+  return parseStaffAllowlist().has(email.toLowerCase());
+}
+
 function resolveAppRole(options: {
   clerkIsAdmin: boolean;
   bootstrapAdmin: boolean;
   existingRole?: Role;
+  email: string;
 }): Role {
   if (options.clerkIsAdmin || options.bootstrapAdmin) return "admin";
-  return options.existingRole ?? "staff";
+  if (options.existingRole) return options.existingRole;
+  if (isEmailStaffAllowlisted(options.email)) return "staff";
+  return "pending";
 }
 
 export async function getSessionUserId(): Promise<string | null> {
@@ -93,6 +112,7 @@ export async function syncUserFromAuth(): Promise<User | null> {
       clerkIsAdmin,
       bootstrapAdmin,
       existingRole: existingById.role,
+      email,
     });
     return prisma.user.update({
       where: { id: userId },
@@ -109,6 +129,7 @@ export async function syncUserFromAuth(): Promise<User | null> {
       clerkIsAdmin,
       bootstrapAdmin,
       existingRole: existingByEmail.role,
+      email,
     });
     const oldId = existingByEmail.id;
 
@@ -139,7 +160,7 @@ export async function syncUserFromAuth(): Promise<User | null> {
       id: userId,
       email,
       fullName,
-      role: resolveAppRole({ clerkIsAdmin, bootstrapAdmin }),
+      role: resolveAppRole({ clerkIsAdmin, bootstrapAdmin, email }),
     },
   });
 }
@@ -154,8 +175,9 @@ export async function requireAdmin(): Promise<{ userId: string; dbUser: User }> 
   await syncUserFromAuth();
   const userId = await requireAuth();
   const dbUser = await prisma.user.findUnique({ where: { id: userId } });
-  if (!dbUser || dbUser.role !== "admin") {
-    redirect("/scanner");
+  if (!dbUser) redirect("/sign-in");
+  if (!isAdminRole(dbUser.role)) {
+    redirect(isStaffRole(dbUser.role) ? "/scanner" : "/access-denied");
   }
   return { userId, dbUser };
 }
@@ -168,8 +190,8 @@ export async function requireStaffOrAdmin(): Promise<{
   const userId = await requireAuth();
   const dbUser = await prisma.user.findUnique({ where: { id: userId } });
   if (!dbUser) redirect("/sign-in");
-  if (dbUser.role !== "admin" && dbUser.role !== "staff") {
-    redirect("/sign-in");
+  if (!isStaffRole(dbUser.role)) {
+    redirect("/access-denied");
   }
   return { userId, dbUser };
 }
