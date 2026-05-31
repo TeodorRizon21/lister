@@ -71,13 +71,19 @@ export default async function EventQrExportPage({
             .
           </p>
         ) : (
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="mt-6 flex flex-col gap-3">
             <a href={exportUrl} className="inline-flex">
               <Button type="button">Descarcă ZIP cu PNG-uri QR</Button>
             </a>
             <p className="text-xs text-muted">
-              Fișiere denumite <span className="text-foreground">0001-Nume-Prenume.png</span>
-              , sortate alfabetic după nume.
+              Arhiva conține foldere separate:{" "}
+              <span className="text-foreground">profesori/</span> pentru cadre
+              didactice și câte un folder per clasă (ex.{" "}
+              <span className="text-foreground">12A/</span>,{" "}
+              <span className="text-foreground">12B/</span>). În fiecare folder,
+              fișierele sunt{" "}
+              <span className="text-foreground">0001-Nume-Prenume.png</span>,
+              sortate alfabetic.
             </p>
           </div>
         )}
@@ -92,7 +98,7 @@ export default async function EventQrExportPage({
             Phone, Teacher, Paid.
           </li>
           <li>Verifică lista de participanți.</li>
-          <li>Descarcă arhiva ZIP și tipărește sau distribuie codurile QR.</li>
+          <li>Descarcă arhiva ZIP — codurile sunt grupate pe clase și profesori.</li>
         </ol>
       </Card>
     </div>

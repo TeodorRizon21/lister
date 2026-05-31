@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { requireStaffOrAdmin } from "@/lib/auth/server";
+import { requireStaffOrAdmin, requireAdmin } from "@/lib/auth/server";
 
 export type CheckInResponse = {
   status: "success" | "already_checked_in" | "invalid_ticket" | "error";
@@ -134,5 +134,50 @@ export async function checkInByQrTokenAction(
       ...participantInfo,
       checkedInAt: now.toISOString(),
     },
+  };
+}
+
+export type ResetCheckInState = {
+  status: "idle" | "success" | "error";
+  message?: string;
+};
+
+export async function resetCheckInAction(
+  _prev: ResetCheckInState,
+  formData: FormData,
+): Promise<ResetCheckInState> {
+  await requireAdmin();
+
+  const participantId = String(formData.get("participantId") ?? "").trim();
+  const eventId = String(formData.get("eventId") ?? "").trim();
+
+  if (!participantId || !eventId) {
+    return { status: "error", message: "Date invalide." };
+  }
+
+  const participant = await prisma.participant.findFirst({
+    where: { id: participantId, eventId },
+    select: { id: true, firstName: true, lastName: true, checkedIn: true },
+  });
+
+  if (!participant) {
+    return { status: "error", message: "Participant negăsit." };
+  }
+
+  if (!participant.checkedIn) {
+    return { status: "success", message: "Participantul nu era marcat ca intrat." };
+  }
+
+  await prisma.participant.update({
+    where: { id: participant.id },
+    data: { checkedIn: false, checkedInAt: null },
+  });
+
+  revalidatePath(`/admin/events/${eventId}/participants`);
+  revalidatePath("/scanner");
+
+  return {
+    status: "success",
+    message: `Check-in resetat — ${participant.lastName} ${participant.firstName}.`,
   };
 }

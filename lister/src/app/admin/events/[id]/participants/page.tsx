@@ -3,15 +3,18 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { ResetCheckInButton } from "@/components/participants/reset-check-in-button";
 import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 50;
+const PROFESORI_FILTER = "yes";
+const ELEVI_FILTER = "no";
 
 type ParticipantFilters = {
   q: string;
   group: string;
   checkedIn: "" | "yes" | "no";
-  status: "" | "teacher" | "student";
+  teacher: "" | "yes" | "no";
   page: number;
 };
 
@@ -20,18 +23,26 @@ function parseFilters(sp: {
   q?: string;
   group?: string;
   checkedIn?: string;
+  teacher?: string;
   status?: string;
 }): ParticipantFilters {
   const checkedIn =
     sp.checkedIn === "yes" || sp.checkedIn === "no" ? sp.checkedIn : "";
-  const status =
-    sp.status === "teacher" || sp.status === "student" ? sp.status : "";
+
+  let teacher: ParticipantFilters["teacher"] = "";
+  if (sp.teacher === "yes" || sp.teacher === "no") {
+    teacher = sp.teacher;
+  } else if (sp.status === "teacher") {
+    teacher = "yes";
+  } else if (sp.status === "student") {
+    teacher = "no";
+  }
 
   return {
     q: (sp.q ?? "").trim(),
     group: (sp.group ?? "").trim(),
     checkedIn,
-    status,
+    teacher,
     page: Math.max(1, Number(sp.page) || 1),
   };
 }
@@ -57,9 +68,9 @@ function buildWhere(eventId: string, filters: ParticipantFilters) {
       : filters.checkedIn === "no"
         ? { checkedIn: false }
         : {}),
-    ...(filters.status === "teacher"
+    ...(filters.teacher === "yes"
       ? { teacher: true }
-      : filters.status === "student"
+      : filters.teacher === "no"
         ? { teacher: false }
         : {}),
   };
@@ -70,7 +81,7 @@ function pageHref(eventId: string, filters: ParticipantFilters, nextPage: number
   if (filters.q) params.set("q", filters.q);
   if (filters.group) params.set("group", filters.group);
   if (filters.checkedIn) params.set("checkedIn", filters.checkedIn);
-  if (filters.status) params.set("status", filters.status);
+  if (filters.teacher) params.set("teacher", filters.teacher);
   if (nextPage > 1) params.set("page", String(nextPage));
   const qs = params.toString();
   return `/admin/events/${eventId}/participants${qs ? `?${qs}` : ""}`;
@@ -89,6 +100,7 @@ export default async function EventParticipantsPage({
     q?: string;
     group?: string;
     checkedIn?: string;
+    teacher?: string;
     status?: string;
   }>;
 }) {
@@ -103,7 +115,8 @@ export default async function EventParticipantsPage({
 
   const where = buildWhere(id, filters);
 
-  const [total, participants, checkedInCount, groupRows] = await Promise.all([
+  const [total, participants, checkedInCount, groupRows, teacherCount] =
+    await Promise.all([
     prisma.participant.count({ where }),
     prisma.participant.findMany({
       where,
@@ -130,10 +143,13 @@ export default async function EventParticipantsPage({
       where: { eventId: id, checkedIn: true },
     }),
     prisma.participant.findMany({
-      where: { eventId: id, group: { not: "" } },
+      where: { eventId: id, group: { not: "" }, teacher: false },
       select: { group: true },
       distinct: ["group"],
       orderBy: { group: "asc" },
+    }),
+    prisma.participant.count({
+      where: { eventId: id, teacher: true },
     }),
   ]);
 
@@ -148,15 +164,15 @@ export default async function EventParticipantsPage({
     Boolean(filters.q) ||
     Boolean(filters.group) ||
     Boolean(filters.checkedIn) ||
-    Boolean(filters.status);
+    Boolean(filters.teacher);
 
   const activeFilterLabels: string[] = [];
   if (filters.q) activeFilterLabels.push(`căutare „${filters.q}"`);
   if (filters.group) activeFilterLabels.push(`clasa ${filters.group}`);
   if (filters.checkedIn === "yes") activeFilterLabels.push("intrați");
   if (filters.checkedIn === "no") activeFilterLabels.push("neintrați");
-  if (filters.status === "teacher") activeFilterLabels.push("profesori");
-  if (filters.status === "student") activeFilterLabels.push("elevi");
+  if (filters.teacher === "yes") activeFilterLabels.push("profesori");
+  if (filters.teacher === "no") activeFilterLabels.push("elevi");
 
   return (
     <div className="flex max-w-5xl flex-col gap-6">
@@ -216,6 +232,18 @@ export default async function EventParticipantsPage({
             </select>
 
             <select
+              name="teacher"
+              defaultValue={filters.teacher}
+              className={cn(selectClassName, "min-w-[160px]")}
+            >
+              <option value="">Profesori: toți</option>
+              <option value={PROFESORI_FILTER}>
+                Doar profesori{teacherCount > 0 ? ` (${teacherCount})` : ""}
+              </option>
+              <option value={ELEVI_FILTER}>Doar elevi</option>
+            </select>
+
+            <select
               name="checkedIn"
               defaultValue={filters.checkedIn}
               className={cn(selectClassName, "min-w-[160px]")}
@@ -223,16 +251,6 @@ export default async function EventParticipantsPage({
               <option value="">Check-in: toți</option>
               <option value="yes">Intrați</option>
               <option value="no">Neintrați</option>
-            </select>
-
-            <select
-              name="status"
-              defaultValue={filters.status}
-              className={cn(selectClassName, "min-w-[160px]")}
-            >
-              <option value="">Status: toți</option>
-              <option value="teacher">Profesori</option>
-              <option value="student">Elevi / participanți</option>
             </select>
           </div>
 
@@ -304,12 +322,19 @@ export default async function EventParticipantsPage({
                   </td>
                   <td className="px-4 py-3">
                     {p.checkedIn ? (
-                      <span className="text-foreground">
-                        Da
-                        {p.checkedInAt
-                          ? ` · ${p.checkedInAt.toLocaleString("ro-RO")}`
-                          : ""}
-                      </span>
+                      <div>
+                        <span className="text-foreground">
+                          Da
+                          {p.checkedInAt
+                            ? ` · ${p.checkedInAt.toLocaleString("ro-RO")}`
+                            : ""}
+                        </span>
+                        <ResetCheckInButton
+                          participantId={p.id}
+                          eventId={id}
+                          participantName={`${p.lastName} ${p.firstName}`}
+                        />
+                      </div>
                     ) : (
                       <span className="text-muted">Nu</span>
                     )}

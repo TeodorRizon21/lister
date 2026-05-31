@@ -3,10 +3,12 @@ import { NextResponse } from "next/server";
 import JSZip from "jszip";
 import { prisma } from "@/lib/prisma";
 import {
+  qrExportFolder,
   qrPayloadFromToken,
   qrPngBuffer,
   safeQrFilename,
   slugifyForDownload,
+  sortQrExportFolders,
 } from "@/lib/qr";
 
 const MAX_EXPORT = 5_000;
@@ -52,16 +54,41 @@ export async function GET(
 
   const participants = await prisma.participant.findMany({
     where: { eventId },
-    select: { firstName: true, lastName: true, qrToken: true },
+    select: {
+      firstName: true,
+      lastName: true,
+      qrToken: true,
+      group: true,
+      teacher: true,
+    },
     orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
   });
 
+  const byFolder = new Map<string, typeof participants>();
+  for (const participant of participants) {
+    const folder = qrExportFolder(participant);
+    const list = byFolder.get(folder);
+    if (list) {
+      list.push(participant);
+    } else {
+      byFolder.set(folder, [participant]);
+    }
+  }
+
   const zip = new JSZip();
-  let index = 0;
-  for (const p of participants) {
-    index += 1;
-    const png = await qrPngBuffer(qrPayloadFromToken(p.qrToken));
-    zip.file(safeQrFilename(p.firstName, p.lastName, index), png);
+  const folders = [...byFolder.keys()].sort(sortQrExportFolders);
+
+  for (const folder of folders) {
+    const list = byFolder.get(folder)!;
+    let index = 0;
+    for (const participant of list) {
+      index += 1;
+      const png = await qrPngBuffer(qrPayloadFromToken(participant.qrToken));
+      zip.file(
+        `${folder}/${safeQrFilename(participant.firstName, participant.lastName, index)}`,
+        png,
+      );
+    }
   }
 
   const zipBuffer = await zip.generateAsync({
