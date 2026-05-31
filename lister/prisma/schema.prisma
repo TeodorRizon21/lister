@@ -1,0 +1,115 @@
+// Prisma pe MongoDB. User.id = Clerk userId (ex. user_xxx).
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  staff
+}
+
+enum CheckInResult {
+  success
+  already_checked_in
+  invalid_ticket
+}
+
+enum MenuType {
+  normal
+  vegetarian
+}
+
+enum SchoolLevel {
+  minor
+  major
+}
+
+enum RegistrationSource {
+  import
+  self
+}
+
+/// Profil aplicație sincronizat la login; id = Clerk `userId`.
+model User {
+  id        String   @id @map("_id")
+  email     String   @unique
+  fullName  String
+  role      Role     @default(staff)
+  createdAt DateTime @default(now())
+
+  eventsCreated Event[]      @relation("EventCreator")
+  checkInLogs   CheckInLog[] @relation("ScannerUser")
+}
+
+model Event {
+  id                       String   @id @default(auto()) @map("_id") @db.ObjectId
+  title                    String
+  description              String?
+  location                 String?
+  startDate                DateTime
+  endDate                  DateTime
+  createdBy                String
+  createdAt                DateTime @default(now())
+  /// Link public: /e/{slug}
+  slug                     String   @unique
+  registrationPasswordHash String?
+  registrationOpen         Boolean  @default(true)
+
+  creator      User          @relation("EventCreator", fields: [createdBy], references: [id])
+  participants Participant[]
+
+  @@index([createdBy])
+  @@index([startDate])
+}
+
+model Participant {
+  id               String             @id @default(auto()) @map("_id") @db.ObjectId
+  eventId          String             @db.ObjectId
+  firstName        String
+  lastName         String
+  email            String?
+  phone            String?
+  /// Clasă / grupă (bal, dans etc.)
+  group            String             @default("")
+  menuType         MenuType?
+  schoolLevel      SchoolLevel?
+  parentalConsent  Boolean            @default(false)
+  source           RegistrationSource @default(import)
+  teacher          Boolean            @default(false)
+  paid             Boolean            @default(false)
+  checkedIn        Boolean            @default(false)
+  checkedInAt      DateTime?
+  /// Token opac pentru QR (UUID); nu include date personale în payload-ul QR.
+  qrToken          String             @unique
+  createdAt        DateTime           @default(now())
+
+  event       Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  checkInLogs CheckInLog[]
+
+  /// Unicitate email verificată în cod când email e prezent; index compus cu null
+  /// blochează importuri fără email (MongoDB permite un singur null per eveniment).
+  @@unique([eventId, firstName, lastName, group])
+  @@index([eventId])
+  @@index([eventId, group])
+  @@index([eventId, email])
+}
+
+model CheckInLog {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  participantId String        @db.ObjectId
+  scannedBy     String
+  scannedAt     DateTime      @default(now())
+  result        CheckInResult
+  deviceInfo    String?
+
+  participant Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  scanner     User        @relation("ScannerUser", fields: [scannedBy], references: [id])
+
+  @@index([participantId])
+  @@index([scannedAt])
+}
