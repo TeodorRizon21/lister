@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireStaffOrAdmin } from "@/lib/auth/server";
-import { Card } from "@/components/ui/card";
 import { ClerkSignOutButton } from "@/components/auth/clerk-sign-out-button";
+import { ScannerPanel } from "@/components/scanner/scanner-panel";
 
 export default async function ScannerPage() {
   const { dbUser } = await requireStaffOrAdmin();
@@ -21,19 +21,13 @@ export default async function ScannerPage() {
         <ClerkSignOutButton variant="secondary" />
       </header>
 
-      <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
-        <Card>
-          <p className="text-sm text-muted">
-            Conectat ca <strong className="text-foreground">{dbUser.fullName}</strong>
-            ({dbUser.role === "admin" ? "admin" : "staff"}).
-          </p>
-          <p className="mt-3 text-sm text-muted">
-            Interfața camera + <code className="text-foreground">html5-qrcode</code> vor fi
-            adăugate în pasul „scanner system”. Flow-ul API: token opac → validare
-            server → check-in idempotent cu mesaje „Already checked in” / „Invalid
-            ticket”.
-          </p>
-        </Card>
+      <div className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-4 p-4">
+        <p className="text-sm text-muted">
+          Conectat ca{" "}
+          <strong className="text-foreground">{dbUser.fullName}</strong> (
+          {dbUser.role === "admin" ? "admin" : "staff"}).
+        </p>
+        <ScannerPanel />
       </div>
     </div>
   );

@@ -164,6 +164,7 @@ export async function requireStaffOrAdmin(): Promise<{
   userId: string;
   dbUser: User;
 }> {
+  await syncUserFromAuth();
   const userId = await requireAuth();
   const dbUser = await prisma.user.findUnique({ where: { id: userId } });
   if (!dbUser) redirect("/sign-in");
