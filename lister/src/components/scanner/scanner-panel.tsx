@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
-import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
+import { ScanResultModal } from "@/components/scanner/scan-result-modal";
 import {
   checkInByQrTokenAction,
   type CheckInResponse,
@@ -12,41 +12,14 @@ import {
 const SCANNER_ELEMENT_ID = "qr-scanner-view";
 const SCAN_COOLDOWN_MS = 2500;
 
-type ScanStatus = CheckInResponse["status"];
-
-const statusStyles: Record<
-  ScanStatus,
-  { border: string; bg: string; label: string }
-> = {
-  success: {
-    border: "border-emerald-500/50",
-    bg: "bg-emerald-500/10",
-    label: "Intrat",
-  },
-  already_checked_in: {
-    border: "border-amber-500/50",
-    bg: "bg-amber-500/10",
-    label: "Deja intrat",
-  },
-  invalid_ticket: {
-    border: "border-destructive/50",
-    bg: "bg-destructive/10",
-    label: "Invalid",
-  },
-  error: {
-    border: "border-destructive/50",
-    bg: "bg-destructive/10",
-    label: "Eroare",
-  },
-};
-
 export function ScannerPanel() {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const processingRef = useRef(false);
   const lastScanRef = useRef<{ token: string; at: number } | null>(null);
+  const modalOpenRef = useRef(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [cameraReady, setCameraReady] = useState(false);
-  const [lastResult, setLastResult] = useState<CheckInResponse | null>(null);
+  const [modalResult, setModalResult] = useState<CheckInResponse | null>(null);
 
   const handleScan = useCallback(async (decodedText: string) => {
     const token = decodedText.trim();
@@ -61,32 +34,29 @@ export function ScannerPanel() {
     ) {
       return;
     }
-    if (processingRef.current) return;
+    if (processingRef.current || modalOpenRef.current) return;
 
     processingRef.current = true;
     lastScanRef.current = { token, at: now };
 
     try {
       const result = await checkInByQrTokenAction(token);
-      setLastResult(result);
-
-      if (result.status === "success") {
-        toast.success(result.message);
-      } else if (result.status === "already_checked_in") {
-        toast.warning(result.message);
-      } else {
-        toast.error(result.message);
-      }
+      modalOpenRef.current = true;
+      setModalResult(result);
     } catch {
-      const fallback: CheckInResponse = {
+      modalOpenRef.current = true;
+      setModalResult({
         status: "error",
         message: "Eroare la check-in. Încearcă din nou.",
-      };
-      setLastResult(fallback);
-      toast.error(fallback.message);
+      });
     } finally {
       processingRef.current = false;
     }
+  }, []);
+
+  const closeModal = useCallback(() => {
+    modalOpenRef.current = false;
+    setModalResult(null);
   }, []);
 
   useEffect(() => {
@@ -136,64 +106,37 @@ export function ScannerPanel() {
     };
   }, [handleScan]);
 
-  const style = lastResult ? statusStyles[lastResult.status] : null;
-
   return (
-    <div className="flex flex-col gap-4">
-      <Card className="overflow-hidden p-0">
-        <div
-          id={SCANNER_ELEMENT_ID}
-          className="min-h-[280px] w-full bg-black/90 [&_video]:mx-auto [&_video]:max-h-[min(70vh,520px)] [&_video]:w-full [&_video]:object-cover"
-        />
-        {!cameraReady && !cameraError ? (
-          <p className="border-t border-border px-4 py-3 text-sm text-muted">
-            Pornesc camera…
-          </p>
-        ) : null}
-        {cameraError ? (
-          <p className="border-t border-border px-4 py-3 text-sm text-destructive">
-            {cameraError}
-          </p>
-        ) : null}
-      </Card>
-
-      <Card>
-        <p className="text-sm text-muted">
-          Îndreaptă camera spre codul QR al participantului. Check-in-ul se face
-          automat la scanare.
-        </p>
-      </Card>
-
-      {lastResult && style ? (
-        <Card className={`border-2 ${style.border} ${style.bg}`}>
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Ultima scanare — {style.label}
-          </p>
-          <p className="mt-2 text-base font-semibold">{lastResult.message}</p>
-          {lastResult.participant ? (
-            <dl className="mt-3 grid gap-1 text-sm text-muted">
-              <div>
-                <span className="text-foreground">
-                  {lastResult.participant.lastName}{" "}
-                  {lastResult.participant.firstName}
-                </span>
-                {lastResult.participant.group ? (
-                  <span> · {lastResult.participant.group}</span>
-                ) : null}
-              </div>
-              <div>{lastResult.participant.eventTitle}</div>
-              {lastResult.participant.checkedInAt ? (
-                <div>
-                  Ora intrării:{" "}
-                  {new Date(lastResult.participant.checkedInAt).toLocaleString(
-                    "ro-RO",
-                  )}
-                </div>
-              ) : null}
-            </dl>
+    <>
+      <div className="flex flex-col gap-4">
+        <Card className="overflow-hidden p-0">
+          <div
+            id={SCANNER_ELEMENT_ID}
+            className="min-h-[280px] w-full bg-black/90 [&_video]:mx-auto [&_video]:max-h-[min(70vh,520px)] [&_video]:w-full [&_video]:object-cover"
+          />
+          {!cameraReady && !cameraError ? (
+            <p className="border-t border-border px-4 py-3 text-sm text-muted">
+              Pornesc camera…
+            </p>
+          ) : null}
+          {cameraError ? (
+            <p className="border-t border-border px-4 py-3 text-sm text-destructive">
+              {cameraError}
+            </p>
           ) : null}
         </Card>
+
+        <Card>
+          <p className="text-sm text-muted">
+            Îndreaptă camera spre codul QR al participantului. După scanare apare
+            un mesaj de acces permis sau interzis.
+          </p>
+        </Card>
+      </div>
+
+      {modalResult ? (
+        <ScanResultModal result={modalResult} onClose={closeModal} />
       ) : null}
-    </div>
+    </>
   );
 }

@@ -3,20 +3,97 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 50;
+
+type ParticipantFilters = {
+  q: string;
+  group: string;
+  checkedIn: "" | "yes" | "no";
+  status: "" | "teacher" | "student";
+  page: number;
+};
+
+function parseFilters(sp: {
+  page?: string;
+  q?: string;
+  group?: string;
+  checkedIn?: string;
+  status?: string;
+}): ParticipantFilters {
+  const checkedIn =
+    sp.checkedIn === "yes" || sp.checkedIn === "no" ? sp.checkedIn : "";
+  const status =
+    sp.status === "teacher" || sp.status === "student" ? sp.status : "";
+
+  return {
+    q: (sp.q ?? "").trim(),
+    group: (sp.group ?? "").trim(),
+    checkedIn,
+    status,
+    page: Math.max(1, Number(sp.page) || 1),
+  };
+}
+
+function buildWhere(eventId: string, filters: ParticipantFilters) {
+  return {
+    eventId,
+    ...(filters.q
+      ? {
+          OR: [
+            { firstName: { contains: filters.q, mode: "insensitive" as const } },
+            { lastName: { contains: filters.q, mode: "insensitive" as const } },
+            { email: { contains: filters.q, mode: "insensitive" as const } },
+            { phone: { contains: filters.q, mode: "insensitive" as const } },
+          ],
+        }
+      : {}),
+    ...(filters.group
+      ? { group: { equals: filters.group, mode: "insensitive" as const } }
+      : {}),
+    ...(filters.checkedIn === "yes"
+      ? { checkedIn: true }
+      : filters.checkedIn === "no"
+        ? { checkedIn: false }
+        : {}),
+    ...(filters.status === "teacher"
+      ? { teacher: true }
+      : filters.status === "student"
+        ? { teacher: false }
+        : {}),
+  };
+}
+
+function pageHref(eventId: string, filters: ParticipantFilters, nextPage: number) {
+  const params = new URLSearchParams();
+  if (filters.q) params.set("q", filters.q);
+  if (filters.group) params.set("group", filters.group);
+  if (filters.checkedIn) params.set("checkedIn", filters.checkedIn);
+  if (filters.status) params.set("status", filters.status);
+  if (nextPage > 1) params.set("page", String(nextPage));
+  const qs = params.toString();
+  return `/admin/events/${eventId}/participants${qs ? `?${qs}` : ""}`;
+}
+
+const selectClassName =
+  "min-h-[44px] rounded-lg border border-border bg-background px-3 py-2 text-sm";
 
 export default async function EventParticipantsPage({
   params,
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ page?: string; q?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    q?: string;
+    group?: string;
+    checkedIn?: string;
+    status?: string;
+  }>;
 }) {
   const { id } = await params;
-  const sp = await searchParams;
-  const page = Math.max(1, Number(sp.page) || 1);
-  const q = (sp.q ?? "").trim();
+  const filters = parseFilters(await searchParams);
 
   const event = await prisma.event.findUnique({
     where: { id },
@@ -24,26 +101,14 @@ export default async function EventParticipantsPage({
   });
   if (!event) notFound();
 
-  const where = {
-    eventId: id,
-    ...(q
-      ? {
-          OR: [
-            { firstName: { contains: q, mode: "insensitive" as const } },
-            { lastName: { contains: q, mode: "insensitive" as const } },
-            { email: { contains: q, mode: "insensitive" as const } },
-            { phone: { contains: q, mode: "insensitive" as const } },
-          ],
-        }
-      : {}),
-  };
+  const where = buildWhere(id, filters);
 
-  const [total, participants, checkedInCount] = await Promise.all([
+  const [total, participants, checkedInCount, groupRows] = await Promise.all([
     prisma.participant.count({ where }),
     prisma.participant.findMany({
       where,
       orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
-      skip: (page - 1) * PAGE_SIZE,
+      skip: (filters.page - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
       select: {
         id: true,
@@ -64,18 +129,34 @@ export default async function EventParticipantsPage({
     prisma.participant.count({
       where: { eventId: id, checkedIn: true },
     }),
+    prisma.participant.findMany({
+      where: { eventId: id, group: { not: "" } },
+      select: { group: true },
+      distinct: ["group"],
+      orderBy: { group: "asc" },
+    }),
   ]);
 
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const safePage = Math.min(page, totalPages);
+  const groups = groupRows
+    .map((row) => row.group)
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b, "ro"));
 
-  function pageHref(nextPage: number) {
-    const params = new URLSearchParams();
-    if (q) params.set("q", q);
-    if (nextPage > 1) params.set("page", String(nextPage));
-    const qs = params.toString();
-    return `/admin/events/${id}/participants${qs ? `?${qs}` : ""}`;
-  }
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const safePage = Math.min(filters.page, totalPages);
+  const hasActiveFilters =
+    Boolean(filters.q) ||
+    Boolean(filters.group) ||
+    Boolean(filters.checkedIn) ||
+    Boolean(filters.status);
+
+  const activeFilterLabels: string[] = [];
+  if (filters.q) activeFilterLabels.push(`căutare „${filters.q}"`);
+  if (filters.group) activeFilterLabels.push(`clasa ${filters.group}`);
+  if (filters.checkedIn === "yes") activeFilterLabels.push("intrați");
+  if (filters.checkedIn === "no") activeFilterLabels.push("neintrați");
+  if (filters.status === "teacher") activeFilterLabels.push("profesori");
+  if (filters.status === "student") activeFilterLabels.push("elevi");
 
   return (
     <div className="flex max-w-5xl flex-col gap-6">
@@ -104,38 +185,81 @@ export default async function EventParticipantsPage({
         <h2 className="text-base font-semibold">Participanți — {event.title}</h2>
         <p className="mt-2 text-sm text-muted">
           {total} în listă
-          {q ? ` (filtru: „${q}”)` : ""} · {checkedInCount} check-in efectuat
+          {activeFilterLabels.length > 0
+            ? ` (filtru: ${activeFilterLabels.join(", ")})`
+            : ""}{" "}
+          · {checkedInCount} check-in efectuat
         </p>
 
-        <form method="get" className="mt-4 flex flex-wrap gap-2">
-          <Input
-            name="q"
-            defaultValue={q}
-            placeholder="Caută nume, email, telefon…"
-            className="min-w-[200px] flex-1"
-          />
-          <button
-            type="submit"
-            className="inline-flex min-h-[44px] items-center rounded-lg border border-border px-4 py-2 text-sm font-medium"
-          >
-            Caută
-          </button>
-          {q ? (
-            <Link
-              href={`/admin/events/${id}/participants`}
-              className="inline-flex min-h-[44px] items-center rounded-lg px-4 py-2 text-sm text-muted underline-offset-4 hover:underline"
+        <form method="get" className="mt-4 flex flex-col gap-3">
+          <div className="flex flex-wrap gap-2">
+            <Input
+              name="q"
+              defaultValue={filters.q}
+              placeholder="Caută nume, email, telefon…"
+              className="min-w-[200px] flex-1"
+            />
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <select
+              name="group"
+              defaultValue={filters.group}
+              className={cn(selectClassName, "min-w-[160px] flex-1")}
             >
-              Resetează
-            </Link>
-          ) : null}
+              <option value="">Toate clasele</option>
+              {groups.map((group) => (
+                <option key={group} value={group}>
+                  {group}
+                </option>
+              ))}
+            </select>
+
+            <select
+              name="checkedIn"
+              defaultValue={filters.checkedIn}
+              className={cn(selectClassName, "min-w-[160px]")}
+            >
+              <option value="">Check-in: toți</option>
+              <option value="yes">Intrați</option>
+              <option value="no">Neintrați</option>
+            </select>
+
+            <select
+              name="status"
+              defaultValue={filters.status}
+              className={cn(selectClassName, "min-w-[160px]")}
+            >
+              <option value="">Status: toți</option>
+              <option value="teacher">Profesori</option>
+              <option value="student">Elevi / participanți</option>
+            </select>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="submit"
+              className="inline-flex min-h-[44px] items-center rounded-lg border border-border px-4 py-2 text-sm font-medium"
+            >
+              Aplică filtre
+            </button>
+            {hasActiveFilters ? (
+              <Link
+                href={`/admin/events/${id}/participants`}
+                className="inline-flex min-h-[44px] items-center rounded-lg px-4 py-2 text-sm text-muted underline-offset-4 hover:underline"
+              >
+                Resetează
+              </Link>
+            ) : null}
+          </div>
         </form>
       </Card>
 
       <Card className="overflow-x-auto p-0">
         {participants.length === 0 ? (
           <p className="p-4 text-sm text-muted">
-            {q
-              ? "Niciun rezultat pentru căutare."
+            {hasActiveFilters
+              ? "Niciun rezultat pentru filtrele selectate."
               : "Niciun participant. Importă un fișier CSV sau Excel."}
           </p>
         ) : (
@@ -144,6 +268,7 @@ export default async function EventParticipantsPage({
               <tr className="border-b border-border bg-background/80 text-xs uppercase tracking-wide text-muted">
                 <th className="px-4 py-3 font-medium">Nume</th>
                 <th className="px-4 py-3 font-medium">Clasă</th>
+                <th className="px-4 py-3 font-medium">Status</th>
                 <th className="px-4 py-3 font-medium">Meniu</th>
                 <th className="px-4 py-3 font-medium">Liceu</th>
                 <th className="px-4 py-3 font-medium">Sursă</th>
@@ -157,6 +282,9 @@ export default async function EventParticipantsPage({
                     {p.lastName} {p.firstName}
                   </td>
                   <td className="px-4 py-3 text-muted">{p.group || "—"}</td>
+                  <td className="px-4 py-3 text-muted">
+                    {p.teacher ? "Profesor" : "Elev"}
+                  </td>
                   <td className="px-4 py-3 text-muted">
                     {p.menuType === "vegetarian"
                       ? "Vegetarian"
@@ -201,7 +329,7 @@ export default async function EventParticipantsPage({
           <div className="flex gap-2">
             {safePage > 1 ? (
               <Link
-                href={pageHref(safePage - 1)}
+                href={pageHref(id, filters, safePage - 1)}
                 className="inline-flex min-h-[44px] items-center rounded-lg border border-border px-4 py-2 font-medium"
               >
                 Înapoi
@@ -209,7 +337,7 @@ export default async function EventParticipantsPage({
             ) : null}
             {safePage < totalPages ? (
               <Link
-                href={pageHref(safePage + 1)}
+                href={pageHref(id, filters, safePage + 1)}
                 className="inline-flex min-h-[44px] items-center rounded-lg border border-border px-4 py-2 font-medium"
               >
                 Înainte
