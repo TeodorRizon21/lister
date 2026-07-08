@@ -24,6 +24,8 @@ enum CheckInResult {
 enum MenuType {
   normal
   vegetarian
+  no_pork
+  no_pork_no_beef
 }
 
 enum SchoolLevel {
@@ -78,6 +80,13 @@ model Participant {
   phone            String?
   /// Clasă / grupă (bal, dans etc.)
   group            String             @default("")
+  /// Așezare la mese (baluri cu locuri alocate).
+  tableNumber      Int?
+  floor            String?
+  /// Se întoarce cu autocarul pus la dispoziție.
+  busReturn        Boolean            @default(false)
+  /// Când s-a trimis emailul cu codul QR (null = netrimis).
+  qrEmailSentAt    DateTime?
   menuType         MenuType?
   schoolLevel      SchoolLevel?
   parentalConsent  Boolean            @default(false)
@@ -99,6 +108,7 @@ model Participant {
   @@index([eventId])
   @@index([eventId, group])
   @@index([eventId, email])
+  @@index([eventId, tableNumber])
 }
 
 model CheckInLog {

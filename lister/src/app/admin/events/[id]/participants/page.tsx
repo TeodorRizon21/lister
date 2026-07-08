@@ -4,17 +4,28 @@ import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ResetCheckInButton } from "@/components/participants/reset-check-in-button";
+import { SendQrEmailsPanel } from "@/components/participants/send-qr-emails-panel";
 import { cn } from "@/lib/utils";
+import { isSmtpConfigured } from "@/lib/mail";
+import { pendingQrEmailWhere } from "@/lib/qr-email";
 
 const PAGE_SIZE = 50;
 const PROFESORI_FILTER = "yes";
 const ELEVI_FILTER = "no";
+
+const MENU_LABELS: Record<string, string> = {
+  normal: "Normal",
+  vegetarian: "Vegetarian",
+  no_pork: "Fără porc",
+  no_pork_no_beef: "Fără porc și vită",
+};
 
 type ParticipantFilters = {
   q: string;
   group: string;
   checkedIn: "" | "yes" | "no";
   teacher: "" | "yes" | "no";
+  bus: "" | "yes" | "no";
   page: number;
 };
 
@@ -24,10 +35,12 @@ function parseFilters(sp: {
   group?: string;
   checkedIn?: string;
   teacher?: string;
+  bus?: string;
   status?: string;
 }): ParticipantFilters {
   const checkedIn =
     sp.checkedIn === "yes" || sp.checkedIn === "no" ? sp.checkedIn : "";
+  const bus = sp.bus === "yes" || sp.bus === "no" ? sp.bus : "";
 
   let teacher: ParticipantFilters["teacher"] = "";
   if (sp.teacher === "yes" || sp.teacher === "no") {
@@ -43,6 +56,7 @@ function parseFilters(sp: {
     group: (sp.group ?? "").trim(),
     checkedIn,
     teacher,
+    bus,
     page: Math.max(1, Number(sp.page) || 1),
   };
 }
@@ -73,6 +87,11 @@ function buildWhere(eventId: string, filters: ParticipantFilters) {
       : filters.teacher === "no"
         ? { teacher: false }
         : {}),
+    ...(filters.bus === "yes"
+      ? { busReturn: true }
+      : filters.bus === "no"
+        ? { busReturn: false }
+        : {}),
   };
 }
 
@@ -82,6 +101,7 @@ function pageHref(eventId: string, filters: ParticipantFilters, nextPage: number
   if (filters.group) params.set("group", filters.group);
   if (filters.checkedIn) params.set("checkedIn", filters.checkedIn);
   if (filters.teacher) params.set("teacher", filters.teacher);
+  if (filters.bus) params.set("bus", filters.bus);
   if (nextPage > 1) params.set("page", String(nextPage));
   const qs = params.toString();
   return `/admin/events/${eventId}/participants${qs ? `?${qs}` : ""}`;
@@ -101,6 +121,7 @@ export default async function EventParticipantsPage({
     group?: string;
     checkedIn?: string;
     teacher?: string;
+    bus?: string;
     status?: string;
   }>;
 }) {
@@ -115,7 +136,7 @@ export default async function EventParticipantsPage({
 
   const where = buildWhere(id, filters);
 
-  const [total, participants, checkedInCount, groupRows, teacherCount] =
+  const [total, participants, totalAll, checkedInCount, notCheckedInCount, busReturnCount, busNoCount, groupRows, groupCounts, teacherCount, studentCount, pendingEmailCount, sentEmailCount] =
     await Promise.all([
     prisma.participant.count({ where }),
     prisma.participant.findMany({
@@ -128,6 +149,8 @@ export default async function EventParticipantsPage({
         firstName: true,
         lastName: true,
         group: true,
+        floor: true,
+        tableNumber: true,
         email: true,
         phone: true,
         menuType: true,
@@ -137,10 +160,22 @@ export default async function EventParticipantsPage({
         paid: true,
         checkedIn: true,
         checkedInAt: true,
+        qrEmailSentAt: true,
+        busReturn: true,
       },
     }),
+    prisma.participant.count({ where: { eventId: id } }),
     prisma.participant.count({
       where: { eventId: id, checkedIn: true },
+    }),
+    prisma.participant.count({
+      where: { eventId: id, checkedIn: false },
+    }),
+    prisma.participant.count({
+      where: { eventId: id, busReturn: true },
+    }),
+    prisma.participant.count({
+      where: { eventId: id, busReturn: false },
     }),
     prisma.participant.findMany({
       where: { eventId: id, group: { not: "" }, teacher: false },
@@ -148,8 +183,26 @@ export default async function EventParticipantsPage({
       distinct: ["group"],
       orderBy: { group: "asc" },
     }),
+    prisma.participant.groupBy({
+      by: ["group"],
+      where: { eventId: id, group: { not: "" } },
+      _count: { _all: true },
+    }),
     prisma.participant.count({
       where: { eventId: id, teacher: true },
+    }),
+    prisma.participant.count({
+      where: { eventId: id, teacher: false },
+    }),
+    prisma.participant.count({
+      where: pendingQrEmailWhere(id),
+    }),
+    prisma.participant.count({
+      where: {
+        eventId: id,
+        email: { not: null },
+        qrEmailSentAt: { not: null },
+      },
     }),
   ]);
 
@@ -158,21 +211,78 @@ export default async function EventParticipantsPage({
     .filter(Boolean)
     .sort((a, b) => a.localeCompare(b, "ro"));
 
+  const groupCountMap = new Map(
+    groupCounts.map((row) => [row.group, row._count._all]),
+  );
+
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const safePage = Math.min(filters.page, totalPages);
   const hasActiveFilters =
     Boolean(filters.q) ||
     Boolean(filters.group) ||
     Boolean(filters.checkedIn) ||
-    Boolean(filters.teacher);
+    Boolean(filters.teacher) ||
+    Boolean(filters.bus);
 
-  const activeFilterLabels: string[] = [];
-  if (filters.q) activeFilterLabels.push(`căutare „${filters.q}"`);
-  if (filters.group) activeFilterLabels.push(`clasa ${filters.group}`);
-  if (filters.checkedIn === "yes") activeFilterLabels.push("intrați");
-  if (filters.checkedIn === "no") activeFilterLabels.push("neintrați");
-  if (filters.teacher === "yes") activeFilterLabels.push("profesori");
-  if (filters.teacher === "no") activeFilterLabels.push("elevi");
+  type ActiveFilterChip = { key: string; label: string; count: number };
+
+  const activeFilterChips: ActiveFilterChip[] = [];
+  if (filters.q) {
+    activeFilterChips.push({
+      key: "q",
+      label: `Căutare „${filters.q}"`,
+      count: total,
+    });
+  }
+  if (filters.group) {
+    activeFilterChips.push({
+      key: "group",
+      label: filters.group,
+      count: groupCountMap.get(filters.group) ?? total,
+    });
+  }
+  if (filters.teacher === "yes") {
+    activeFilterChips.push({
+      key: "teacher-yes",
+      label: "Profesori",
+      count: teacherCount,
+    });
+  }
+  if (filters.teacher === "no") {
+    activeFilterChips.push({
+      key: "teacher-no",
+      label: "Elevi",
+      count: studentCount,
+    });
+  }
+  if (filters.checkedIn === "yes") {
+    activeFilterChips.push({
+      key: "checkedIn-yes",
+      label: "Intrați",
+      count: checkedInCount,
+    });
+  }
+  if (filters.checkedIn === "no") {
+    activeFilterChips.push({
+      key: "checkedIn-no",
+      label: "Neintrați",
+      count: notCheckedInCount,
+    });
+  }
+  if (filters.bus === "yes") {
+    activeFilterChips.push({
+      key: "bus-yes",
+      label: "Cu autocar",
+      count: busReturnCount,
+    });
+  }
+  if (filters.bus === "no") {
+    activeFilterChips.push({
+      key: "bus-no",
+      label: "Fără autocar",
+      count: busNoCount,
+    });
+  }
 
   return (
     <div className="flex max-w-5xl flex-col gap-6">
@@ -199,12 +309,48 @@ export default async function EventParticipantsPage({
 
       <Card>
         <h2 className="text-base font-semibold">Participanți — {event.title}</h2>
+
+        <div className="mt-3 flex flex-wrap gap-2">
+          <span className="inline-flex items-center rounded-full border border-border bg-background px-3 py-1 text-xs font-medium">
+            Total {totalAll}
+          </span>
+          <span className="inline-flex items-center rounded-full border border-border bg-background px-3 py-1 text-xs font-medium">
+            Autocar {busReturnCount}
+          </span>
+          <span className="inline-flex items-center rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-muted">
+            Fără autocar {busNoCount}
+          </span>
+          <span className="inline-flex items-center rounded-full border border-border bg-background px-3 py-1 text-xs font-medium">
+            Check-in {checkedInCount}
+          </span>
+          <span className="inline-flex items-center rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-muted">
+            Neintrați {notCheckedInCount}
+          </span>
+          {hasActiveFilters ? (
+            <span className="inline-flex items-center rounded-full border border-foreground/20 bg-foreground/5 px-3 py-1 text-xs font-semibold">
+              Rezultate filtru {total}
+            </span>
+          ) : null}
+        </div>
+
+        {activeFilterChips.length > 0 ? (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {activeFilterChips.map((chip) => (
+              <span
+                key={chip.key}
+                className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-xs text-muted"
+              >
+                <span>{chip.label}</span>
+                <span className="font-semibold text-foreground">{chip.count}</span>
+              </span>
+            ))}
+          </div>
+        ) : null}
+
         <p className="mt-2 text-sm text-muted">
-          {total} în listă
-          {activeFilterLabels.length > 0
-            ? ` (filtru: ${activeFilterLabels.join(", ")})`
-            : ""}{" "}
-          · {checkedInCount} check-in efectuat
+          {hasActiveFilters
+            ? `${total} participanți după filtre (din ${totalAll} total)`
+            : `${totalAll} participanți înscriși`}
         </p>
 
         <form method="get" className="mt-4 flex flex-col gap-3">
@@ -223,10 +369,10 @@ export default async function EventParticipantsPage({
               defaultValue={filters.group}
               className={cn(selectClassName, "min-w-[160px] flex-1")}
             >
-              <option value="">Toate clasele</option>
+              <option value="">Toate clasele / mesele ({totalAll})</option>
               {groups.map((group) => (
                 <option key={group} value={group}>
-                  {group}
+                  {group} ({groupCountMap.get(group) ?? 0})
                 </option>
               ))}
             </select>
@@ -236,11 +382,11 @@ export default async function EventParticipantsPage({
               defaultValue={filters.teacher}
               className={cn(selectClassName, "min-w-[160px]")}
             >
-              <option value="">Profesori: toți</option>
+              <option value="">Profesori: toți ({totalAll})</option>
               <option value={PROFESORI_FILTER}>
-                Doar profesori{teacherCount > 0 ? ` (${teacherCount})` : ""}
+                Doar profesori ({teacherCount})
               </option>
-              <option value={ELEVI_FILTER}>Doar elevi</option>
+              <option value={ELEVI_FILTER}>Doar elevi ({studentCount})</option>
             </select>
 
             <select
@@ -248,9 +394,19 @@ export default async function EventParticipantsPage({
               defaultValue={filters.checkedIn}
               className={cn(selectClassName, "min-w-[160px]")}
             >
-              <option value="">Check-in: toți</option>
-              <option value="yes">Intrați</option>
-              <option value="no">Neintrați</option>
+              <option value="">Check-in: toți ({totalAll})</option>
+              <option value="yes">Intrați ({checkedInCount})</option>
+              <option value="no">Neintrați ({notCheckedInCount})</option>
+            </select>
+
+            <select
+              name="bus"
+              defaultValue={filters.bus}
+              className={cn(selectClassName, "min-w-[160px]")}
+            >
+              <option value="">Autocar: toți ({totalAll})</option>
+              <option value="yes">Cu autocar ({busReturnCount})</option>
+              <option value="no">Fără autocar ({busNoCount})</option>
             </select>
           </div>
 
@@ -271,6 +427,13 @@ export default async function EventParticipantsPage({
             ) : null}
           </div>
         </form>
+
+        <SendQrEmailsPanel
+          eventId={id}
+          pendingCount={pendingEmailCount}
+          sentCount={sentEmailCount}
+          smtpConfigured={isSmtpConfigured()}
+        />
       </Card>
 
       <Card className="overflow-x-auto p-0">
@@ -281,15 +444,18 @@ export default async function EventParticipantsPage({
               : "Niciun participant. Importă un fișier CSV sau Excel."}
           </p>
         ) : (
-          <table className="w-full min-w-[900px] text-left text-sm">
+          <table className="w-full min-w-[1100px] text-left text-sm">
             <thead>
               <tr className="border-b border-border bg-background/80 text-xs uppercase tracking-wide text-muted">
                 <th className="px-4 py-3 font-medium">Nume</th>
-                <th className="px-4 py-3 font-medium">Clasă</th>
+                <th className="px-4 py-3 font-medium">Email</th>
+                <th className="px-4 py-3 font-medium">Clasă / Masă</th>
+                <th className="px-4 py-3 font-medium">Autocar</th>
                 <th className="px-4 py-3 font-medium">Status</th>
                 <th className="px-4 py-3 font-medium">Meniu</th>
                 <th className="px-4 py-3 font-medium">Liceu</th>
                 <th className="px-4 py-3 font-medium">Sursă</th>
+                <th className="px-4 py-3 font-medium">Email QR</th>
                 <th className="px-4 py-3 font-medium">Check-in</th>
               </tr>
             </thead>
@@ -299,16 +465,22 @@ export default async function EventParticipantsPage({
                   <td className="px-4 py-3 font-medium">
                     {p.lastName} {p.firstName}
                   </td>
-                  <td className="px-4 py-3 text-muted">{p.group || "—"}</td>
+                  <td className="max-w-[200px] truncate px-4 py-3 text-muted" title={p.email ?? undefined}>
+                    {p.email ?? "—"}
+                  </td>
+                  <td className="px-4 py-3 text-muted">
+                    {p.tableNumber
+                      ? `Masa ${p.tableNumber}${p.floor ? ` · ${p.floor}` : ""}`
+                      : p.group || "—"}
+                  </td>
+                  <td className="px-4 py-3 text-muted">
+                    {p.busReturn ? "Da" : "Nu"}
+                  </td>
                   <td className="px-4 py-3 text-muted">
                     {p.teacher ? "Profesor" : "Elev"}
                   </td>
                   <td className="px-4 py-3 text-muted">
-                    {p.menuType === "vegetarian"
-                      ? "Vegetarian"
-                      : p.menuType === "normal"
-                        ? "Normal"
-                        : "—"}
+                    {p.menuType ? (MENU_LABELS[p.menuType] ?? p.menuType) : "—"}
                   </td>
                   <td className="px-4 py-3 text-muted">
                     {p.schoolLevel === "minor"
@@ -319,6 +491,13 @@ export default async function EventParticipantsPage({
                   </td>
                   <td className="px-4 py-3 text-muted">
                     {p.source === "self" ? "Online" : "Import"}
+                  </td>
+                  <td className="px-4 py-3 text-muted">
+                    {!p.email
+                      ? "Fără email"
+                      : p.qrEmailSentAt
+                        ? `Trimis · ${p.qrEmailSentAt.toLocaleDateString("ro-RO")}`
+                        : "Netrimis"}
                   </td>
                   <td className="px-4 py-3">
                     {p.checkedIn ? (
