@@ -19,6 +19,7 @@ type EventForEmail = Pick<Event, "title" | "startDate" | "location">;
 export function pendingQrEmailWhere(eventId: string): Prisma.ParticipantWhereInput {
   return {
     eventId,
+    teacher: false,
     email: { not: null },
     OR: [{ qrEmailSentAt: null }, { qrEmailSentAt: { isSet: false } }],
   };
@@ -33,6 +34,12 @@ export function buildQrEmailHtml(
     day: "numeric",
     month: "long",
     year: "numeric",
+    timeZone: "Europe/Bucharest",
+  });
+  const timeStr = event.startDate.toLocaleTimeString("ro-RO", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Bucharest",
   });
   const masa = participant.tableNumber
     ? `<p style="font-size:18px;margin:16px 0"><strong>Masa ${participant.tableNumber}</strong>${participant.floor ? ` — ${participant.floor}` : ""}</p>`
@@ -44,6 +51,7 @@ export function buildQrEmailHtml(
     <p style="color:#666;margin:0 0 20px">${dateStr}${event.location ? ` · ${event.location}` : ""}</p>
     <p>Salut, <strong>${fullName}</strong>!</p>
     <p>Acesta este biletul tău de acces. Prezintă codul QR de mai jos la intrare (îl poți arăta direct de pe telefon).</p>
+    <p><strong>Intrarea în bal începe la ora ${timeStr}.</strong></p>
     ${masa}
     <div style="text-align:center;margin:24px 0">
       <img src="cid:qrcode" alt="Cod QR acces" width="280" height="280" style="border:1px solid #eee;border-radius:12px" />

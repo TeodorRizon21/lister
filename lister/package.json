@@ -14,6 +14,7 @@
     "db:studio": "prisma studio",
     "db:backfill-slugs": "node scripts/backfill-event-slugs.mjs",
     "import:mese": "node --env-file=.env scripts/import-mese.mjs",
+    "import:atm": "node --env-file=.env scripts/import-atm-bal.mjs",
     "send:qr-emails": "node --env-file=.env scripts/send-qr-emails.mjs",
     "postinstall": "prisma generate"
   },

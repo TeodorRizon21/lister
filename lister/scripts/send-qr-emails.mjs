@@ -56,6 +56,7 @@ if (!event) {
 const pending = await prisma.participant.findMany({
   where: {
     eventId: event.id,
+    teacher: false,
     email: { not: null },
     // Pe MongoDB câmpul poate lipsi din document — `null` nu acoperă `isSet: false`.
     OR: [{ qrEmailSentAt: null }, { qrEmailSentAt: { isSet: false } }],
@@ -84,6 +85,12 @@ const dateStr = event.startDate.toLocaleDateString("ro-RO", {
   day: "numeric",
   month: "long",
   year: "numeric",
+  timeZone: "Europe/Bucharest",
+});
+const timeStr = event.startDate.toLocaleTimeString("ro-RO", {
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "Europe/Bucharest",
 });
 
 function emailHtml(p) {
@@ -97,6 +104,7 @@ function emailHtml(p) {
     <p style="color:#666;margin:0 0 20px">${dateStr}${event.location ? ` · ${event.location}` : ""}</p>
     <p>Salut, <strong>${fullName}</strong>!</p>
     <p>Acesta este biletul tău de acces. Prezintă codul QR de mai jos la intrare (îl poți arăta direct de pe telefon).</p>
+    <p><strong>Intrarea în bal începe la ora ${timeStr}.</strong></p>
     ${masa}
     <div style="text-align:center;margin:24px 0">
       <img src="cid:qrcode" alt="Cod QR acces" width="280" height="280" style="border:1px solid #eee;border-radius:12px" />
