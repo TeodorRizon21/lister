@@ -15,6 +15,7 @@
     "db:backfill-slugs": "node scripts/backfill-event-slugs.mjs",
     "import:mese": "node --env-file=.env scripts/import-mese.mjs",
     "import:atm": "node --env-file=.env scripts/import-atm-bal.mjs",
+    "import:uauim": "node --env-file=.env scripts/import-uauim-bal.mjs",
     "send:qr-emails": "node --env-file=.env scripts/send-qr-emails.mjs",
     "postinstall": "prisma generate"
   },
