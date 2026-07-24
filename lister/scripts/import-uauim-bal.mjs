@@ -1,7 +1,13 @@
 /**
- * Import Bal UAUIM din JSON (generat de scripts/_tmp-parse-uauim.py).
+ * Import Bal UAUIM — 3 facultăți, mese globale unice.
  *
- *   node --env-file=.env scripts/import-uauim-bal.mjs --event bal-uauim [--dry-run]
+ *   Interior     → mese 1–5   (din „Lista mese Bal interior”)
+ *   Urbanism     → mese 6–11  (încă fără componență)
+ *   Arhitectura  → mese 12–32 (din „Jocurile Foamei”: masa locală N → N+11)
+ *
+ *   node --env-file=.env scripts/import-uauim-bal.mjs --event bal-uauim [--dry-run] [--replace]
+ *
+ * --replace șterge toți participanții existenți ai evenimentului înainte de import.
  */
 import { randomUUID } from "node:crypto";
 import fs from "node:fs";
@@ -19,9 +25,13 @@ const hasFlag = (name) => process.argv.includes(`--${name}`);
 
 const eventRef = arg("event") ?? "bal-uauim";
 const dryRun = hasFlag("dry-run");
+const replace = hasFlag("replace");
 const jsonPath =
   arg("json") ??
   path.join(__dirname, "_tmp-pdf-extract", "uauim-participants.json");
+
+/** Masa locală în PDF-ul JF → masă globală (Arhitectura începe la 12). */
+const ARHITECTURA_TABLE_OFFSET = 11;
 
 const prisma = new PrismaClient();
 
@@ -36,40 +46,42 @@ console.log(`Eveniment: ${event.title} (${event.id})`);
 
 const data = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
 
-/**
- * Mesele se suprapun între Interior / Jocurile Foamei / VIP —
- * nu setăm tableNumber/floor; păstrăm doar zona ca grup.
- */
-function toRow(p) {
-  const teacher = Boolean(p.teacher);
-  const group = teacher
-    ? p.groupLabel ?? "VIP"
-    : p.floor === "Interior"
-      ? "Interior"
-      : p.floor === "Jocurile Foamei"
-        ? "Jocurile Foamei"
-        : p.floor ?? "";
+function toInterior(p) {
   return {
     firstName: p.firstName || "—",
     lastName: p.lastName,
     email: p.email || null,
-    group,
+    group: "Interior",
+    floor: "Interior",
+    tableNumber: p.tableNumber,
     busReturn: Boolean(p.busReturn),
     menuType: p.menuType || null,
-    teacher,
+    teacher: false,
+  };
+}
+
+function toArhitectura(p) {
+  const local = p.tableNumber;
+  return {
+    firstName: p.firstName || "—",
+    lastName: p.lastName,
+    email: p.email || null,
+    group: "Arhitectura",
+    floor: "Arhitectura",
+    tableNumber: local + ARHITECTURA_TABLE_OFFSET,
+    busReturn: Boolean(p.busReturn),
+    menuType: p.menuType || null,
+    teacher: false,
+    localTable: local,
   };
 }
 
 const key = (p) =>
   `${p.firstName}\u0001${p.lastName}\u0001${p.group}`.toLowerCase();
 
-const rows = [
-  ...data.interior.map(toRow),
-  ...data.jocurileFoamei.map(toRow),
-  ...data.faculty.map(toRow),
-];
+const rows = [...data.interior.map(toInterior), ...data.jocurileFoamei.map(toArhitectura)];
 
-// Dezambiguare: același nume în același grup (ex. două „Sandu Laura” la Interior)
+// Dezambiguare nume identice în aceeași facultate
 const claimedNames = new Set();
 for (const p of rows) {
   let k = key(p);
@@ -86,6 +98,17 @@ for (const p of rows) {
     n += 1;
   }
   claimedNames.add(k);
+  console.warn(
+    `  Dezambiguare: ${p.lastName} ${p.firstName} (Masa ${p.tableNumber}) → group „${p.group || "(gol)"}”`,
+  );
+}
+
+if (replace && !dryRun) {
+  const del = await prisma.participant.deleteMany({ where: { eventId: event.id } });
+  console.log(`Șterși ${del.count} participanți existenți.`);
+} else if (replace && dryRun) {
+  const n = await prisma.participant.count({ where: { eventId: event.id } });
+  console.log(`[dry-run] Ar șterge ${n} participanți.`);
 }
 
 const existing = await prisma.participant.findMany({
@@ -122,33 +145,39 @@ for (const p of rows) {
   toInsert.push(p);
 }
 
-const withEmail = toInsert.filter((p) => p.email && !p.teacher);
+const withEmail = toInsert.filter((p) => p.email);
 const noEmail = toInsert.filter((p) => !p.email);
-const teachers = toInsert.filter((p) => p.teacher);
 
-console.log(`\nTotal sursă: ${rows.length}`);
+console.log(`\nTotal sursă: ${rows.length} (fără Urbanism — încă fără listă)`);
 console.log(`De inserat: ${toInsert.length}`);
-console.log(`  cu email (QR pe mail): ${withEmail.length}`);
-console.log(`  fără email (fără QR pe mail): ${noEmail.length}`);
-console.log(`  VIP/facultate (teacher): ${teachers.length}`);
-console.log(`  sărite duplicate nume: ${skippedDup}, email: ${skippedEmail}`);
+console.log(`  cu email: ${withEmail.length}`);
+console.log(`  fără email: ${noEmail.length}`);
+console.log(`  sărite duplicate: ${skippedDup}, email: ${skippedEmail}`);
 
-const byGroup = new Map();
+const byFaculty = new Map();
+const byTable = new Map();
 for (const p of toInsert) {
-  byGroup.set(p.group, (byGroup.get(p.group) ?? 0) + 1);
+  byFaculty.set(p.floor, (byFaculty.get(p.floor) ?? 0) + 1);
+  const t = p.tableNumber;
+  if (!byTable.has(t)) byTable.set(t, { floor: p.floor, n: 0 });
+  byTable.get(t).n += 1;
 }
-console.log("Pe grup:", Object.fromEntries(byGroup));
+console.log("Pe facultate:", Object.fromEntries(byFaculty));
+console.log("Pe masă:");
+for (const t of [...byTable.keys()].sort((a, b) => a - b)) {
+  const { floor, n } = byTable.get(t);
+  console.log(`  Masa ${String(t).padStart(2, "0")} (${floor}): ${n} p`);
+}
 
 if (dryRun) {
   console.log("\n[dry-run] Fără scriere. Exemple:");
-  for (const p of withEmail.slice(0, 3)) {
-    console.log(`  [${p.group}] ${p.lastName} ${p.firstName} <${p.email}>`);
+  for (const p of toInsert.filter((x) => x.floor === "Interior").slice(0, 2)) {
+    console.log(`  Interior Masa ${p.tableNumber}: ${p.lastName} ${p.firstName} <${p.email}>`);
   }
-  for (const p of noEmail.slice(0, 3)) {
-    console.log(`  fără email [${p.group}]: ${p.lastName} ${p.firstName}`);
-  }
-  for (const p of teachers.slice(0, 3)) {
-    console.log(`  VIP [${p.group}]: ${p.lastName} ${p.firstName}`);
+  for (const p of toInsert.filter((x) => x.floor === "Arhitectura").slice(0, 2)) {
+    console.log(
+      `  Arhitectura Masa ${p.tableNumber} (local ${p.localTable}): ${p.lastName} ${p.firstName} <${p.email}>`,
+    );
   }
 } else {
   const CHUNK = 300;
@@ -162,15 +191,31 @@ if (dryRun) {
         lastName: p.lastName,
         ...(p.email ? { email: p.email } : {}),
         group: p.group,
+        tableNumber: p.tableNumber,
+        floor: p.floor,
         busReturn: p.busReturn,
         ...(p.menuType ? { menuType: p.menuType } : {}),
-        teacher: p.teacher,
+        teacher: false,
         qrToken: randomUUID(),
       })),
     });
     created += res.count;
   }
+
+  // Actualizează descrierea evenimentului cu cele 3 facultăți
+  const description = [
+    "Bal UAUIM — 3 facultăți:",
+    "• Interior — mesele 1–5",
+    "• Urbanism — mesele 6–11",
+    "• Arhitectura — mesele 12–32",
+  ].join("\n");
+  await prisma.event.update({
+    where: { id: event.id },
+    data: { description },
+  });
+
   console.log(`\nInserate: ${created} persoane în „${event.title}”.`);
+  console.log("Descriere eveniment actualizată (3 facultăți + intervale mese).");
 }
 
 await prisma.$disconnect();

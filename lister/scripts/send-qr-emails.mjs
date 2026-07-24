@@ -28,11 +28,12 @@ const eventRef = arg("event");
 const limit = Number(arg("limit") ?? Infinity);
 const testEmail = arg("test");
 const dryRun = hasFlag("dry-run");
+const noSeat = hasFlag("no-seat");
 const DELAY_MS = Number(arg("delay") ?? 1500);
 
 if (!eventRef) {
   console.error(
-    "Utilizare: node --env-file=.env scripts/send-qr-emails.mjs --event <eventId|slug> [--limit N] [--test email] [--dry-run] [--delay ms]",
+    "Utilizare: node --env-file=.env scripts/send-qr-emails.mjs --event <eventId|slug> [--limit N] [--test email] [--dry-run] [--no-seat] [--delay ms]",
   );
   process.exit(1);
 }
@@ -63,7 +64,16 @@ const pending = await prisma.participant.findMany({
   },
   orderBy: [{ tableNumber: "asc" }, { lastName: "asc" }],
 });
-console.log(`Eveniment: ${event.title} — de trimis: ${pending.length}${Number.isFinite(limit) ? ` (limită azi: ${limit})` : ""}`);
+console.log(`Eveniment: ${event.title} (${event.slug}) — de trimis: ${pending.length}${Number.isFinite(limit) ? ` (limită azi: ${limit})` : ""}`);
+console.log(`From: ${SMTP_FROM ?? "(dry-run)"}`);
+console.log(`Masa/etaj în email: ${noSeat ? "NU" : "DA"}`);
+if (/atm/i.test(SMTP_FROM ?? "") && !/uauim/i.test(event.slug + event.title)) {
+  console.warn("⚠ SMTP_FROM conține „ATM” dar evenimentul nu e ATM — verifică From.");
+}
+if (/atm/i.test(SMTP_FROM ?? "") && /uauim/i.test(event.slug + event.title)) {
+  console.error("✗ SMTP_FROM e încă „Bal ATM” pentru Bal UAUIM. Setează SMTP_FROM=\"Bal UAUIM <...>\" la rulare.");
+  process.exit(1);
+}
 
 if (dryRun) {
   console.log("[dry-run] Nu trimit nimic. Primii 10 destinatari:");
@@ -95,9 +105,10 @@ const timeStr = event.startDate.toLocaleTimeString("ro-RO", {
 
 function emailHtml(p) {
   const fullName = `${p.firstName} ${p.lastName}`.trim();
-  const masa = p.tableNumber
-    ? `<p style="font-size:18px;margin:16px 0"><strong>Masa ${p.tableNumber}</strong>${p.floor ? ` — ${p.floor}` : ""}</p>`
-    : "";
+  const masa =
+    !noSeat && p.tableNumber
+      ? `<p style="font-size:18px;margin:16px 0"><strong>Masa ${p.tableNumber}</strong>${p.floor ? ` — ${p.floor}` : ""}</p>`
+      : "";
   return `
   <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#1a1a2e">
     <h2 style="margin:0 0 8px">${event.title}</h2>

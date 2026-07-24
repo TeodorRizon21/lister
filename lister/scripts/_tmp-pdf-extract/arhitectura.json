@@ -1,0 +1,2396 @@
+[
+  [
+    null,
+    "NUME PRENUME",
+    "MAIL",
+    "TRANSPORT DA / NU",
+    "INTOLERANTE/ ALERGENI/ PREFERINTE",
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "MASA 12",
+    "GHITA GRETA",
+    "greta.ghita04@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "DUMENICA ALEXANDRU -INVITAT(GHITA)",
+    "alexandru.dumenica@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "COSTAN TEODORA",
+    "teodora.costan7@yahoo.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "TANASESCU ALEXANDRU -INVITAT(COSTAN)",
+    "alexandrutanasescu28@yahoo.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "MELUTA ALEXANDRA",
+    "melutaalexandra@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "HELMIS ALEXANDRU GABRIEL -INVITAT (MELUTA)",
+    "helmisalexandru@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "DOBRE SIMINA-ANDREEA",
+    "dobresimina24@gmail.com",
+    "Da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "PEARSON ADAM - INVITAT(DOBRE)",
+    "info@hypersonicwholesale.co.uk",
+    "Da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "MASA 13",
+    "PAULIUC MARA",
+    "marapauliuc13@gmail.com",
+    "Da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "TARHUNA PATRICK",
+    "tarhunapatricknicholas@gmail.com",
+    "Nu",
+    "Fara peste",
+    null,
+    null
+  ],
+  [
+    null,
+    "ENACHE ELENA-MIHAELA",
+    "elena.enache2305@gmail.com",
+    "Da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "ARITON NICOLAE",
+    "nikarta17@gmail.com",
+    "da",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "COPEȚCHI BOGDAN ",
+    "bogdan.copetchi@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "BABOI ALEXANDRA ",
+    "ababoi22@yahoo.com",
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "MIHAI-STAN ALEXANDRA ",
+    "mihai.stan.alexandra12@gmail.com",
+    "Da",
+    "Alergie la oțet ",
+    null,
+    null
+  ],
+  [
+    null,
+    "PAVEL DENISA ",
+    "denyipavel@gmail.com",
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "MARTINESCU DIANA ",
+    "dcmartinescu2001@gmail.com",
+    null,
+    "celiachie si intoleranta la lactoza",
+    null,
+    null
+  ],
+  [
+    null,
+    "UNTARU LETITIA",
+    "letitia_cristiana@yahoo.ro",
+    null,
+    "ovo-lacto-vegetarian",
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "MASA 14",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "MOLDOVAN VLAD-GEORGE",
+    "moldovanvlad36@gmail.con",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "GHEORGHIADE ARMAND-MIHAI",
+    "gheorghiadearmand@icloud.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "ONOFREI MĂLINA -INVITAT (TUDOR)",
+    "malinaonofrei12@gmail.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "TUDOR CĂTĂLIN ",
+    "catalintudor99@gmail.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "IVANA ALIN-MIHAIL",
+    "ivanaalin@yahoo.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "CATRINA IZABELA -INVITAT (IVANA)",
+    "catrinaizabela@yahoo.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "GROSU ANTONIA",
+    "antonia.grosu861@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "INOVEANU SORANA-NICOL",
+    "nicol.sorana@yahoo.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "LOVIN CLAUDIU -INVITAT (INOVEANU)",
+    "lovin.claudiu00@yahoo.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "BĂLUȚĂ DIANA",
+    "diana200101@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "AHMED FARES -INVITAT (BĂLUȚĂ)",
+    "ahmed03fares@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "FRÎNCU DIANA-ANDREEA",
+    "frincudiana@yahoo.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    "MASA 15",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "LENE IOANA-DIANA",
+    "ioana.diana.lene@gmail.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "OLARIU COSMIN-DUMITRU",
+    "colariucdo@gmail.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "ANGHEL ALEXIA MARIA",
+    "anghelalexiamaria@gmail.com",
+    "Nu",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "ALEXE LUCIANA-TEODORA",
+    "lucianaalexe24@gmail.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "CRACIUNESCU ALEXANDRA",
+    "alexandracraciuu01@gmail.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "CIOLACU ROXANA-MIHAELA",
+    "ciolacuroxana199@yahoo.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "TUDIC ADINA",
+    "tudicadina@yahoo.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "GEORGESCU LAVINIA-NICOLETA",
+    "laviniageorgescu788@gmail.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "SPATARU OVIDIU-GEORGE",
+    "spataruovidiu002@gmail.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "IONUS IOAN TIMOTEI",
+    "ionus.timotei@yahoo.com",
+    "nu",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "NUȚU IOAN-PETER -invitat (LENE IOANA-DIANA)",
+    "ioannutu007@gmail.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "SOARE GEORGIANA TEODORA",
+    "soare_georgiana00@yahoo.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "MASA 16",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "EL BOUSTANY STEPHANI",
+    "stephboustany@gmail.com",
+    "nu",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "OZKAN OANA BIANCA",
+    "biancaozkan@gmail.com",
+    "nu",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "COSTEA BOGDAN",
+    "bogdancostea@yahoo.com",
+    "nu",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "SANG YU",
+    "sangyu1105@gmail.com",
+    "nu",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "DINU MIRUNA",
+    "miruna.rdinu@gmail.com",
+    null,
+    "vegetarian ",
+    null,
+    null
+  ],
+  [
+    null,
+    "OLTEANU GABRIELA",
+    "gabriela.olteanu17@yahoo.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "FATU ADRIAN",
+    "fatu_adrian@yahoo.com",
+    "DA",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "OPRESCU MIHNEA",
+    "moprescu2001@gmail.com",
+    "DA",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "GRODENSCHI ALEXANDRU ANDREI",
+    "grodenschialexandru@yahoo.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "MASA 17",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "APOPEI GEORGIANA",
+    "georgiana.apopei23@yahoo.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "MUTALÎP AYLIN",
+    "aylinmutalip@yahoo.ro",
+    "DA",
+    "FĂRĂ CARNE DE PORC",
+    null,
+    null
+  ],
+  [
+    null,
+    "VERIOTI MIRUNA",
+    "mirunaverioti@yahoo.com",
+    "DA",
+    "FĂRĂ CARNE DE PORC",
+    null,
+    null
+  ],
+  [
+    null,
+    "DUMITRU GABRIELA",
+    "gabriela.dumitru213@yahoo.com",
+    "DA",
+    " NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "ȘTREANGĂ TUDOR",
+    "tudorstreanga7@gmail.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "NACA MARIAN CLAUDIU",
+    "naca_claudiu2012@yahoo.com",
+    "Nu",
+    "Miere",
+    null,
+    null
+  ],
+  [
+    null,
+    "ARDELEANU ANA MARIA",
+    "anaardeleanu2001@yahoo.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "CIOBANU ELENA ",
+    "elena.ciobanu2001@gmail.com",
+    "NU",
+    "Rosii, fructe de mare, icre, castraveti",
+    null,
+    null
+  ],
+  [
+    null,
+    "ADAM MIHAI IVAN - invitat (CIOBANU)",
+    "adamivanmihai@gmail.com",
+    "NU",
+    "Rosii",
+    null,
+    null
+  ],
+  [
+    null,
+    "PUSCAS FABIAN-MARCEL",
+    "fabianfabi1234@yahoo.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "ILINCAI AMALIA - INVITAT (PUSCAS)",
+    "amaliailincai7@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "Masa 18",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "BACIU ANDREEA ",
+    "baciuandreea093@gmail.com ",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "ION DENISA",
+    "alexia.denisa2002@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "DELOST ANDREI (invitat Ion)",
+    "delostandrei@yahoo.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "MIRON RARES (invitat Sandescu)",
+    "raresmiron05@gmail.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "SANDESCU CARINA ",
+    "sandescu2001@gmail.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "LASCU IOANA",
+    "ioanalascu1@yahoo.com",
+    "DA",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "MAIA MAN ABRAMIUC (invitat Lascu)",
+    "maiamanabramiuc@gmail.com",
+    "DA",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "IRODIU MARIA ",
+    "maria.irodiu@yahoo.com",
+    "DA",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "AXINIA ANDRADA",
+    "andradaaxinia@yahoo.com",
+    "DA",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "CERNAT ILINCA ",
+    "ilincamariac@gmail.com",
+    "DA",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "MASA 19",
+    "TĂTULESCU BIANCA",
+    "biancatatulescu@gmail.com",
+    "NU",
+    "FARA CARNE DE PORC",
+    null,
+    null
+  ],
+  [
+    null,
+    "NICORICI VLAD (invitat - TĂTULESCU)",
+    "nicoricivladmihai@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "DOBRIN IRINA",
+    "irideea2001@gmail.com",
+    "NU",
+    "FARA CARNE DE PORC",
+    null,
+    null
+  ],
+  [
+    null,
+    "PICĂ TUDOR (invitat - DOBRIN)",
+    "becausewhynot6226@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "ROTARU ELENA DENISA",
+    "denisa_rotaru@ymail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "ARDELEAN ALEXANDRU (invitat - ROTARU)",
+    "ardeleanalexandru94@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "VASILE FLORENTINA-GEORGIANA ",
+    "florentinavasile061@gmail.com",
+    "NU",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "BUNDĂ GEORGE (invitat - VASILE)",
+    "g.bund58@yahoo.com ",
+    "NU",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "SOFRON GEORGIANA",
+    "sofron.georgiana@yahoo.com",
+    null,
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "VLĂSCEANU ANDREI-MARINEL ",
+    "vlasceanuandrei1509@gmail.com ",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "NICOARA IOANA",
+    "michaelanicoara@yahoo.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "MASA 20",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "MEȘTERU VLAD - INVITAT ( STRAT)",
+    "mesteru78@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "STRAT LAURA",
+    "laura.strat12@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "STANOV GEORGE - INVITAT (GHEORGHE)",
+    "stanovgeorge@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "GHEORGHE DIANA",
+    "dianagheorghe2001@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "BIRTEA ALEXANDRA",
+    "alexandrabirtea45@gmail.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "VLAD ALEXANDRU ISTRATE ",
+    "1vlad.alexandru1@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "OȘAN MARIA IRINA",
+    "osanmaria88&gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "MILICA-RAFALET DIANA",
+    "dianamilicar@gmail.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "MISOSNIKY MARA",
+    "mara.misosniky@gmail.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "ENACHE DUMITRITA",
+    "dumi.enake@gmail.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "UNGUREANU ADRIAN - INVITAT ENACHE",
+    "adrian.ungureanu998@gmail.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "PIRIIANU ANA",
+    "ana.piriianu@gmail.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "MASA 21",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "VINTILA ANITA-ILONA",
+    "vintila.anita@yahoo.com",
+    "Da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "JOÃO DIOGO SANTOS-INVITAT (VINTILA) ",
+    "diogotmp1997@gmail.com",
+    "Da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "MANEA AMALIA",
+    "amileila16@icloud.com",
+    "Da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "STEFAN MARIAN-SEBASTIAN - INVITAT (MANEA)",
+    "stefansebastian91@yahoo.com",
+    "Da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "MOLDOVEANU ANDREI",
+    "andreidragosmoldo@gmail.com",
+    "Da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "MARGINEANU ANDREEA - INVITAT (MOLDOVEANU)",
+    "andreea.margineanu.andre@gmail.com",
+    "Da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "COZEA VERA",
+    "vera.cozea02@gmail.com",
+    "Da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "DOBRESCU MADALINA-MARIA",
+    "dobrescu.madalina.maria@gmail.com",
+    "Da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "BAȚU ANDREI",
+    "andreibatu@gmail.com",
+    "Da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "PANTAZI TEODORA - INVITAT (BAȚU)",
+    "pantazi.teodora@yahoo.com",
+    "Da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "MASA 22",
+    "RADUTA ALEXANDRA DANIELA ",
+    "alexandraradutadaniela@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "DUMINICA IRINA",
+    "irina.duminica10@gmail.com",
+    "DA",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "BULIGAI STEFANIA",
+    "buligaistefania80@gmail.com",
+    "DA",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "TOMA ELENA",
+    "elena.toma18@yahoo.com",
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "MARINESCU STEFANIA",
+    "stefania.2304@yahoo.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "LISITA TEODORA IOANA",
+    "teodoralisita@yahoo.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "GANGU CATALINA - invitat (LISITA)",
+    "catalinagangu@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "DAMIAN KARINA-ELENA - invitat POPA",
+    "karina.damian2001@yahoo.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "POPA ALEXANDRU ",
+    "popaalexandru2001@yahoo.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "JUGULETE ANCA",
+    "jugulete.anca1@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "DĂNĂILĂ DIANA",
+    "danaila_diana2002@yahoo.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "MATEI BOGDAN - invitat DĂNĂILĂ",
+    "bogdanmatei14@yahoo.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "MASA 23",
+    "UNGUREANU LEONARD",
+    "leonard_marian2001@yahoo.com",
+    "da",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "IANCU MARINA",
+    "andreeamarinaiancu@yahoo.ro",
+    "da",
+    "vegetarian (pestele e ok)",
+    null,
+    null
+  ],
+  [
+    null,
+    "FARAON LUCIAN",
+    "lucianfaraon22@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "BUTCARU DIMITRIE",
+    "dimipundiche@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "INVITAT BUTCARU; BOBOHALMA IOANA",
+    "ibobohalma@yahoo.ro",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "CIOVICA RALUCA",
+    "raluca.ciovica@yahoo.com",
+    "NU",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "BOJIN ALEXANDRA",
+    "alexandrabojin01@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "MOCANU GABRIELA",
+    "mocanuelenagabriela27@gmail.com",
+    "Da",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "LAZARESCU MARIA",
+    "marialazarescu03@gmail.com",
+    "NU",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "DRAGAN TEODORA",
+    "gabrieladragan9@gmail.com",
+    "NU",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "MASA 24",
+    "AFRENIE CATALINA ",
+    "catalinaafrenie3@gmail.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "CATANESCU INGRID",
+    "ingridcatanescu@yahoo.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "PIRVU DORINA ",
+    "dorina.pirvu26@yahoo.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "CRISTEA VANESSA",
+    "vanesacristea@gmail.com",
+    "Nu",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "Invitat: STANESCU ANTONIU(CRISTEA) ",
+    "tony.stanescu1@gmail.com",
+    "Nu",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "LORENA DIACONU",
+    "diaconulorena07@yahoo.com",
+    "NU",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "invitat: RUBEN BACIU (DIACONU) ",
+    "ruben_baciu@yahoo.com",
+    "NU",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "MARIA TIRSA",
+    "mariatirsa19@gmail.com",
+    "NU",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "NECHIFOR ANDRA ",
+    "andraioana_01@yahoo.com",
+    "NU",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "CHITU TIBERIU ",
+    "tibichitu@yahoo.ro",
+    "NU",
+    "Vegetarian",
+    null,
+    null
+  ],
+  [
+    null,
+    "POPESCU ANDRA ",
+    "pandra567@gmail.com",
+    "NU",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "BUTURUGA IULIA ",
+    "iulia.buturuga28@gmail.com",
+    "Da",
+    "Nu ",
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "Masa 25",
+    "PELIN TUDOR",
+    "pelintudor@yahoo.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "DAN ILINCA",
+    "ilinca.dan07@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "BUJDEIU TEODORA",
+    "teodorabujdeiu@yahoo.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "ROMAN ANTONIA",
+    "Antoniaroman882@yahoo.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "CUCU THEODORA",
+    "theodoraadrianacucu@yahoo.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "MARCOIANU ALEXANDRA",
+    "alexandraalexa176@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "MARINOIU MARIA",
+    "maria.marinoiu@gmail.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "LEICA ALEXANDRU",
+    "leica_a@yahoo.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "ROSU CEZARA",
+    "cezara.r@yahoo.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "SAMAHA DIANE",
+    "diane.samaha@yahoo.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "DONIGA MIRUNA",
+    "miruna_doniga@yahoo.com",
+    "DA",
+    "Fara muraturi si fara mustar",
+    null,
+    null
+  ],
+  [
+    null,
+    "UȘURELU VIOLETA IOANA",
+    "ioanavioleta2015@gmail.com",
+    "NU",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "Masa 26",
+    "LACUSTA ELIANA",
+    "eliana.lacusta@yahoo.com",
+    "DA",
+    "Fara carne de porc",
+    null,
+    null
+  ],
+  [
+    null,
+    "CATANESCU ADRIAN-invitat (LACUSTA)",
+    "adriancatanescu21@gmail.com",
+    "DA",
+    "Fara carne de porc",
+    null,
+    null
+  ],
+  [
+    null,
+    "TUMURICA LUMINITA",
+    "tumuricaandreealuminita26@gmail.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "CROITORU ADRIAN (invitat TUMURICA)",
+    "adrian.croitoru.98@gmail.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "CONSTANTIN GEORGIANA ALEXANDRA",
+    "georgiana1709@yahoo.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "COCIOABA ROBERT (invitat Constantin)",
+    "cocioabarobertvalentin@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "VATAVU GIULIA",
+    "giuliavatavu@yahoo.com",
+    "DA",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "MIHAILA MIRUNA",
+    "mirumihaila@yahoo.com",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "IONICA MARIA",
+    "mariaionica858@yahoo.com",
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "BADEA ANCA ELENA",
+    "ancabadea273@icloud.com",
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "Masa 27",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "CARAMAN CARMEN-ARABELA",
+    "arabelacaraman@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "IUROV COSMIN-GEORGE -invitat (CARAMAN)",
+    "iurov.cosmin@gmail.com",
+    "NU",
+    "Alergie creveti",
+    null,
+    null
+  ],
+  [
+    null,
+    "ALEXANDRU IULIANA ALEXANDRA",
+    "alexandru.alexandra03@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "NEDELCU ANA",
+    "anamarianedelcu01@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "TUDORAN ANDREEA BIANCA",
+    "bianca.andreea.tudoran27@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "HARALAMBIE MAXIMILIAN -invitat(TUDORAN) ",
+    "maxmaxim26@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "GHENCEA ELENA",
+    "elena.ghencea01@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "CHIRITA RUXANDRA",
+    "ruxandrachirita36@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "Masa 28",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "MILBAUER ANDREI",
+    "milbauer61@gmail.com ",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "PANAITESCU MARIA-invitat(MILBAUER )",
+    "ampanaitescu88@gmail.com ",
+    "DA",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "AMARIEI ELISA ELENA",
+    "amarieielisa01@gmail.com",
+    "NU",
+    "FARA BRANZETURI",
+    null,
+    null
+  ],
+  [
+    null,
+    "IGNAT GABRIEL -invitat ( AMARIEI )",
+    "gabriel_ignat@outlook.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "SÎRGHE ANDREEA  ALEXANDRA",
+    "andreea.sirghe0909@gmail.com",
+    "NU",
+    "NU",
+    null,
+    "  "
+  ],
+  [
+    null,
+    "IORDACHE CRISTIAN-invitat(SÎRGHE )",
+    "nicolaecristian193@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "NICA DIANA",
+    "nica.dianamaria@yahoo.com",
+    null,
+    "NU ",
+    null,
+    null
+  ],
+  [
+    null,
+    "MARCU MELTEM",
+    "marcumeltem@yahoo.com",
+    "NU",
+    "NU ",
+    null,
+    null
+  ],
+  [
+    null,
+    "ARON CLAUDIA",
+    "claudiaron2010@yahoo.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "CARASTOIAN SABINA-GEORGIANA",
+    "carastoiansabina@gmail.com",
+    "NU",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "Masa 29",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "LUCA RARES (invitat GEORGESCU)",
+    "lucarares44@gmail.com",
+    "da",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "IORDACHE MARA",
+    "iordachemara8@gmail.com",
+    "da",
+    "fara branzeturi",
+    "  ",
+    null
+  ],
+  [
+    null,
+    "GEORGESCU ADELA",
+    "g_adela@yahoo.com",
+    "da",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "LESPEZANU TUDOR",
+    "lespezanutudor1@gmail.com",
+    "nu",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "GHERGHINA SORIN",
+    "sorinandrei502@yahoo.com",
+    "nu",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "GĂITAN BOGDAN",
+    "bogdan_gaitan13@yahoo.com",
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "MURARU IOANA",
+    "ioana.muraru26@yahoo.com",
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "PASCU GABRIEL (invitat MURARU)",
+    "pascugabriel107@gmail.com",
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "FLOREA MARA ",
+    "maraflorea98@yahoo.com",
+    "nu",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "CHITU IULIANA",
+    "iulya_chitu@yahoo.com",
+    "nu",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "POPA ANDREEA",
+    "popaandreeaflorina2001@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "BOLONTOC DANIEL (invitat POPA)",
+    "danielbolontoc.2001@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "ȘUNCĂ TEOFAN-DANIEL",
+    "teofandaniel@yahoo.com",
+    "da",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "Masa 30",
+    "STANCIU ALEXIA",
+    "alexiastanciu1212@gmail.com",
+    "Nu",
+    "Pescatarian",
+    null,
+    null
+  ],
+  [
+    null,
+    "LATU BOGDAN - invitat (STANCIU)",
+    "bogdanlatu16@gmail.com",
+    "Nu",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "FLOREA ADELAIDA",
+    "adelaida.florea@yahoo.com",
+    "nu",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "FLOAREA RICHARD - invitat (FLOREA)",
+    "gabriel.floarea16@yahoo.com",
+    "nu",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "TASELLARI ANTOINA",
+    "tantoina@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "ILIE ANDREI",
+    "andreiilie2000@gmail.com",
+    "da",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "SEVINDI SULEYMAN SINAN",
+    "suleymansinan.sev@gmail.com",
+    "da",
+    "fara porc",
+    null,
+    null
+  ],
+  [
+    null,
+    "MALINA COVASA",
+    "malinacovasa@gmail.com",
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "Masa 31",
+    "DRĂGHICI MARIA BIANCA",
+    "draghici.mariabianca@gmail.com",
+    "DA",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "CRĂCIUN RADU CONSTANTIN - invitat DRĂGHICI",
+    "radu.craciun222@gmail.com",
+    "DA",
+    "Rosii, fructe de mare, peste",
+    null,
+    null
+  ],
+  [
+    null,
+    "COZMA CARMEN ȘTEFANIA",
+    "carmencozma02@gmail.com ",
+    "DA",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "PASCU IOAN ALEXANDRU - invitat COZMA",
+    "pascualexandru258@gmail.com",
+    "DA",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "OLTEAN ISTVAN ",
+    "istvanoltean243@gmail.com",
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "MOROSANU RALUCA-ELENA",
+    "ralucamorosanu5@gmail.com",
+    "NU",
+    "mazare, ardei",
+    null,
+    null
+  ],
+  [
+    null,
+    "DRAICA ANDREI (invitat MOROȘANU)",
+    "andrei.draica2000@gmail.com",
+    "NU",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "DOBRESCU ALEXANDRU-SERAFIM",
+    "serafimdobrescu.arh@gmail.com",
+    "DA",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "POPESCU RUXANDRA-IOANA (Invitat DOBRESCU)",
+    "ruxandra.ioana16@yahoo.com",
+    "DA",
+    "Lacto-Vegetarian",
+    null,
+    null
+  ],
+  [
+    null,
+    "DEACONU DARIA MARIA",
+    "daria3399@gmail.com",
+    "DA",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  [
+    "Masa 32",
+    "BRANDI BIANCA IOANA",
+    "bianca.brandi02@gmail.com",
+    "DA",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "ROȘCA FLORIN CĂTĂLIN",
+    "catalin.rosca098@gmail.com",
+    "Da",
+    "nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "LĂCĂTUȘ MARA",
+    "maralacatus28@gmail.com",
+    "da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "TUDOR LUCA",
+    "lucatudorii@gmail.com",
+    "da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "ENESCU CEZAR",
+    "cezarenescu@gmail.com",
+    "da",
+    "NU",
+    null,
+    null
+  ],
+  [
+    null,
+    "SARIGHIOLEANU MIHNEA-TEODOR",
+    "sari.mihneateodor@gmail.com",
+    "da",
+    null,
+    null,
+    null
+  ],
+  [
+    null,
+    "OANCEA ELENA",
+    "elena.oancea2000@yahoo.com",
+    "da",
+    "Nu",
+    null,
+    null
+  ],
+  [
+    null,
+    "STERFENITU DARIA",
+    "daria.sterfenitu00@gmail.com",
+    "Da",
+    "Nu",
+    null,
+    null
+  ]
+]
