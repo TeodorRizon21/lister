@@ -10,54 +10,89 @@ import {
 } from "@/features/check-in/actions";
 
 const SCANNER_ELEMENT_ID = "qr-scanner-view";
-const SCAN_COOLDOWN_MS = 2500;
+/** Cooldown after closing the result modal, so the same QR still in frame isn't re-scanned. */
+const POST_CLOSE_COOLDOWN_MS = 2500;
 
 export function ScannerPanel() {
   const scannerRef = useRef<Html5Qrcode | null>(null);
-  const processingRef = useRef(false);
+  /** Blocks all scans from recognition until the result modal is closed. */
+  const lockedRef = useRef(false);
   const lastScanRef = useRef<{ token: string; at: number } | null>(null);
-  const modalOpenRef = useRef(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [cameraReady, setCameraReady] = useState(false);
   const [modalResult, setModalResult] = useState<CheckInResponse | null>(null);
+  const [awaitingResult, setAwaitingResult] = useState(false);
 
-  const handleScan = useCallback(async (decodedText: string) => {
-    const token = decodedText.trim();
-    if (!token) return;
-
-    const now = Date.now();
-    const last = lastScanRef.current;
-    if (
-      last &&
-      last.token === token &&
-      now - last.at < SCAN_COOLDOWN_MS
-    ) {
-      return;
-    }
-    if (processingRef.current || modalOpenRef.current) return;
-
-    processingRef.current = true;
-    lastScanRef.current = { token, at: now };
-
+  const pauseScanner = useCallback(() => {
+    const scanner = scannerRef.current;
+    if (!scanner?.isScanning) return;
     try {
-      const result = await checkInByQrTokenAction(token);
-      modalOpenRef.current = true;
-      setModalResult(result);
+      scanner.pause(true);
     } catch {
-      modalOpenRef.current = true;
-      setModalResult({
-        status: "error",
-        message: "Eroare la check-in. Încearcă din nou.",
-      });
-    } finally {
-      processingRef.current = false;
+      // Already paused or not ready — lock still holds via lockedRef.
     }
   }, []);
+
+  const resumeScanner = useCallback(() => {
+    const scanner = scannerRef.current;
+    if (!scanner?.isScanning) return;
+    try {
+      scanner.resume();
+    } catch {
+      // Ignore resume errors; next successful start handles recovery.
+    }
+  }, []);
+
+  const handleScan = useCallback(
+    async (decodedText: string) => {
+      const token = decodedText.trim();
+      if (!token) return;
+      if (lockedRef.current) return;
+
+      const now = Date.now();
+      const last = lastScanRef.current;
+      if (
+        last &&
+        last.token === token &&
+        now - last.at < POST_CLOSE_COOLDOWN_MS
+      ) {
+        return;
+      }
+
+      // Lock immediately on recognition — before any await — so duplicate
+      // frames cannot start a second check-in while the network is slow.
+      lockedRef.current = true;
+      lastScanRef.current = { token, at: now };
+      pauseScanner();
+      setAwaitingResult(true);
+
+      try {
+        const result = await checkInByQrTokenAction(token);
+        setModalResult(result);
+      } catch {
+        setModalResult({
+          status: "error",
+          message: "Eroare la check-in. Încearcă din nou.",
+        });
+      } finally {
+        setAwaitingResult(false);
+      }
+    },
+    [pauseScanner],
+  );
 
   const closeModal = useCallback(() => {
-    modalOpenRef.current = false;
+    // Restart cooldown from dismiss so a QR still in frame isn't re-read.
+    if (lastScanRef.current) {
+      lastScanRef.current = {
+        ...lastScanRef.current,
+        at: Date.now(),
+      };
+    }
     setModalResult(null);
-  }, []);
+    lockedRef.current = false;
+    resumeScanner();
+  }, [resumeScanner]);
 
   useEffect(() => {
     let cancelled = false;
@@ -122,6 +157,11 @@ export function ScannerPanel() {
           {cameraError ? (
             <p className="border-t border-border px-4 py-3 text-sm text-destructive">
               {cameraError}
+            </p>
+          ) : null}
+          {awaitingResult ? (
+            <p className="border-t border-border px-4 py-3 text-sm text-muted">
+              Verific biletul…
             </p>
           ) : null}
         </Card>

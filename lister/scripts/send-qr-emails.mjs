@@ -67,12 +67,18 @@ const pending = await prisma.participant.findMany({
 console.log(`Eveniment: ${event.title} (${event.slug}) — de trimis: ${pending.length}${Number.isFinite(limit) ? ` (limită azi: ${limit})` : ""}`);
 console.log(`From: ${SMTP_FROM ?? "(dry-run)"}`);
 console.log(`Masa/etaj în email: ${noSeat ? "NU" : "DA"}`);
-if (/atm/i.test(SMTP_FROM ?? "") && !/uauim/i.test(event.slug + event.title)) {
-  console.warn("⚠ SMTP_FROM conține „ATM” dar evenimentul nu e ATM — verifică From.");
-}
-if (/atm/i.test(SMTP_FROM ?? "") && /uauim/i.test(event.slug + event.title)) {
+const fromIsAtm = /atm/i.test(SMTP_FROM ?? "");
+const eventIsAtm = /atm/i.test(`${event.slug} ${event.title}`);
+const eventIsUauim = /uauim/i.test(`${event.slug} ${event.title}`);
+if (fromIsAtm && eventIsUauim) {
   console.error("✗ SMTP_FROM e încă „Bal ATM” pentru Bal UAUIM. Setează SMTP_FROM=\"Bal UAUIM <...>\" la rulare.");
   process.exit(1);
+}
+if (fromIsAtm && !eventIsAtm) {
+  console.warn("⚠ SMTP_FROM conține „ATM” dar evenimentul nu e ATM — verifică From.");
+}
+if (eventIsAtm && !fromIsAtm) {
+  console.warn("⚠ Eveniment ATM dar SMTP_FROM nu conține „ATM” — verifică From.");
 }
 
 if (dryRun) {
